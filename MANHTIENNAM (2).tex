@@ -1,0 +1,373 @@
+\documentclass[aspectratio=169]{beamer}
+
+%----------------- GÓI LỆNH CƠ BẢN -----------------
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{ragged2e}
+\usepackage{tikz}
+\usetikzlibrary{calc, arrows.meta, positioning, shapes, shapes.geometric}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Cấu hình hiển thị Code C++
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\tiny,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{orange},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    frame=single,
+    breaklines=true,
+    backgroundcolor=\color{gray!5}
+}
+
+\tikzset{
+    state/.style={circle, draw, thick, minimum size=0.7cm, fill=#1!20},
+    state/.default=blue,
+    node distance=1.5cm
+}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+%----------------- THÔNG TIN TIÊU ĐỀ -----------------
+\title[Lý thuyết Đồ thị & Thuật toán]{LÝ THUYẾT ĐỒ THỊ VÀ THUẬT TOÁN}
+\subtitle{Cơ sở dữ liệu - Giải thuật - Cài đặt C++}
+
+\date[\today]{\today}
+
+\begin{document}
+
+% 1. Trang tiêu đề
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% 2. Mục lục
+\begin{frame}{Nội dung báo cáo}
+    \tableofcontents
+\end{frame}
+
+% --- PHẦN 1: GIỚI THIỆU ---
+\section{Giới thiệu & Định nghĩa}
+% 3. Khái niệm
+\begin{frame}{1.1 Khái niệm về Đồ thị}
+    \begin{itemize}
+        \item Đồ thị là cấu trúc dữ liệu gồm các nút và các kết nối giữa chúng.
+        \item \textbf{Bài toán thực tế:}
+        \begin{itemize}
+            \item Mạng internet: Các trang web (đỉnh) và liên kết (cạnh).
+            \item Bản đồ: Các thành phố (đỉnh) và đường đi (cạnh).
+        \end{itemize}
+    \end{itemize}
+    
+\end{frame}
+
+% 4. Định nghĩa toán học
+\begin{frame}{1.2 Định nghĩa toán học}
+    \begin{block}{Đồ thị $G = (V, E)$}
+        \begin{itemize}
+            \item $V = \{v_1, v_2, \dots, v_n\}$ là tập các \textbf{đỉnh} (Vertices).
+            \item $E = \{e_1, e_2, \dots, e_m\}$ là tập các \textbf{cạnh} (Edges). Mỗi cạnh $e \in E$ nối một cặp đỉnh $(u, v)$.
+        \end{itemize}
+    \end{block}
+    \centering
+    \begin{tikzpicture}
+        \node[state] (A) {A};
+        \node[state, right of=A] (B) {B};
+        \node[state, below of=A] (C) {C};
+        \draw[thick] (A) -- (B);
+        \draw[thick] (B) -- (C);
+        \draw[thick] (A) -- (C);
+    \end{tikzpicture}
+    \\ \small Ví dụ: $V = \{A, B, C\}, E = \{(A,B), (B,C), (A,C)\}$
+\end{frame}
+
+% --- PHẦN 2: PHÂN LOẠI ---
+\section{Phân loại đồ thị}
+% 5. Đồ thị vô hướng
+\begin{frame}{2.1 Đồ thị vô hướng (Undirected Graph)}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \begin{itemize}
+                \item Cạnh nối hai đỉnh không phân biệt thứ tự.
+                \item Cạnh $(u, v)$ cũng là cạnh $(v, u)$.
+                \item Biểu diễn quan hệ hai chiều (ví dụ: Bạn bè trên Facebook).
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{tikzpicture}
+                \node[state] (1) {1};
+                \node[state, right of=1] (2) {2};
+                \draw[thick] (1) -- (2);
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% 6. Đồ thị có hướng
+\begin{frame}{2.2 Đồ thị có hướng (Directed Graph/Digraph)}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \begin{itemize}
+                \item Cạnh có hướng xác định từ đỉnh nguồn đến đỉnh đích.
+                \item Ký hiệu cung: $u \to v$.
+                \item Ví dụ: Lượt theo dõi trên Instagram, đường một chiều.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{tikzpicture}
+                \node[state] (1) {1};
+                \node[state, right of=1] (2) {2};
+                \draw[thick, ->, >={Stealth}] (1) -- (2);
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    
+\end{frame}
+
+% 7. Đồ thị có trọng số
+\begin{frame}{2.3 Đồ thị có trọng số (Weighted Graph)}
+    \begin{itemize}
+        \item Mỗi cạnh gắn liền với một giá trị số (trọng số).
+        \item Trọng số có thể là: khoảng cách, chi phí, thời gian,...
+    \end{itemize}
+    \centering
+    \begin{tikzpicture}
+        \node[state] (1) {A};
+        \node[state, right=2cm of 1] (2) {B};
+        \draw[thick] (1) -- node[above] {50km} (2);
+    \end{tikzpicture}
+\end{frame}
+
+% --- PHẦN 3: TÍNH CHẤT ---
+\section{Tính chất cơ bản}
+% 8. Bậc của đỉnh
+\begin{frame}{3.1 Bậc của đỉnh}
+    \begin{itemize}
+        \item \textbf{Vô hướng:} $deg(v)$ là số cạnh kề với đỉnh $v$.
+        \item \textbf{Có hướng:} 
+        \begin{itemize}
+            \item Bậc vào ($deg^-(v)$): số cung đi vào.
+            \item Bậc ra ($deg^+(v)$): số cung đi ra.
+        \end{itemize}
+    \end{itemize}
+    \begin{exampleblock}{Định lý bắt tay}
+        Tổng bậc của tất cả các đỉnh bằng 2 lần số cạnh: $\sum deg(v) = 2|E|$.
+    \end{exampleblock}
+\end{frame}
+
+% --- PHẦN 4: TỔ CHỨC DỮ LIỆU ---
+\section{Tổ chức dữ liệu}
+% 9. Ma trận kề
+\begin{frame}{4.1 Ma trận kề (Adjacency Matrix)}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Ma trận $A_{n \times n}$.
+                \item $A[i][j] = 1$ nếu có cạnh, ngược lại $0$.
+                \item \textbf{Ưu:} Kiểm tra cạnh nhanh $O(1)$.
+                \item \textbf{Nhược:} Tốn bộ nhớ $O(V^2)$.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            $A = \begin{pmatrix} 0 & 1 & 1 \\ 1 & 0 & 0 \\ 1 & 0 & 0 \end{pmatrix}$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% 10. Danh sách kề
+\begin{frame}{4.2 Danh sách kề (Adjacency List)}
+    \begin{itemize}
+        \item Mỗi đỉnh có một danh sách các đỉnh kề nó.
+        \item Sử dụng \texttt{vector<int> adj[N]} trong C++.
+        \item \textbf{Ưu điểm:} Tiết kiệm bộ nhớ, duyệt các đỉnh kề nhanh.
+    \end{itemize}
+    
+\end{frame}
+
+% 11. Ví dụ Code cài đặt danh sách kề
+\begin{frame}[fragile]{4.3 Ví dụ Code: Khai báo đồ thị}
+\begin{lstlisting}
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MAXN = 1000;
+vector<int> adj[MAXN]; // Mang cac vector de luu danh sach ke
+
+void addEdge(int u, int v) {
+    adj[u].push_back(v);
+    adj[v].push_back(u); // Bo dong nay neu la do thi co huong
+}
+
+int main() {
+    addEdge(1, 2);
+    addEdge(1, 3);
+    return 0;
+}
+\end{lstlisting}
+\end{frame}
+
+% --- PHẦN 5: DFS ---
+\section{Thuật toán DFS}
+% 12. Ý tưởng DFS
+\begin{frame}{5.1 Tìm kiếm theo chiều sâu (DFS)}
+    \begin{itemize}
+        \item \textbf{Nguyên lý:} Đi sâu nhất có thể trên một nhánh, khi không đi được nữa thì quay lui (Backtracking).
+        \item \textbf{Cơ chế:} Sử dụng Ngăn xếp (Stack) hoặc Đệ quy.
+    \end{itemize}
+    
+\end{frame}
+
+% 13. Code DFS
+\begin{frame}[fragile]{5.2 Cài đặt DFS bằng đệ quy}
+\begin{lstlisting}
+bool visited[MAXN];
+
+void DFS(int u) {
+    cout << u << " "; // Tham dinh u
+    visited[u] = true;
+    
+    for (int v : adj[u]) {
+        if (!visited[v]) {
+            DFS(v); // Goi de quy den dinh ke chua tham
+        }
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+% 14. Ví dụ minh họa DFS
+\begin{frame}{5.3 Ví dụ minh họa DFS}
+    \centering
+    \begin{tikzpicture}
+        \node[state] (1) {1};
+        \node[state, below left of=1] (2) {2};
+        \node[state, below right of=1] (3) {3};
+        \node[state, below of=2] (4) {4};
+        \draw[thick] (1) -- (2) -- (4);
+        \draw[thick] (1) -- (3);
+    \end{tikzpicture}
+    \\ \textbf{Thứ tự duyệt:} 1 $\to$ 2 $\to$ 4 $\to$ 3
+\end{frame}
+
+% --- PHẦN 6: BFS ---
+\section{Thuật toán BFS}
+% 15. Ý tưởng BFS
+\begin{frame}{6.1 Tìm kiếm theo chiều rộng (BFS)}
+    \begin{itemize}
+        \item \textbf{Nguyên lý:} Thăm các đỉnh theo từng lớp (Layer). Thăm hết các đỉnh cách gốc $k$ cạnh trước khi thăm các đỉnh cách gốc $k+1$.
+        \item \textbf{Cơ chế:} Sử dụng Hàng đợi (Queue).
+    \end{itemize}
+    
+\end{frame}
+
+% 16. Code BFS
+\begin{frame}[fragile]{6.2 Cài đặt BFS}
+\begin{lstlisting}
+#include <queue>
+
+void BFS(int startNode) {
+    queue<int> q;
+    q.push(startNode);
+    visited[startNode] = true;
+
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        cout << u << " ";
+
+        for (int v : adj[u]) {
+            if (!visited[v]) {
+                visited[v] = true;
+                q.push(v);
+            }
+        }
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+% 17. Ví dụ minh họa BFS
+\begin{frame}{6.3 Ví dụ minh họa BFS}
+    \centering
+    \begin{tikzpicture}
+        \node[state] (1) {1};
+        \node[state, below left of=1] (2) {2};
+        \node[state, below right of=1] (3) {3};
+        \node[state, below of=2] (4) {4};
+        \draw[thick] (1) -- (2) -- (4);
+        \draw[thick] (1) -- (3);
+    \end{tikzpicture}
+    \\ \textbf{Thứ tự duyệt:} 1 $\to$ 2 $\to$ 3 $\to$ 4 (vì 2 và 3 cùng mức)
+\end{frame}
+
+% --- PHẦN 7: SO SÁNH & ỨNG DỤNG ---
+\section{So sánh & Ứng dụng}
+% 18. So sánh DFS và BFS
+\begin{frame}{7.1 So sánh DFS và BFS}
+    \begin{table}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{Đặc điểm} & \textbf{DFS} & \textbf{BFS} \\ \hline
+            Cấu trúc & Stack / Đệ quy & Queue \\ \hline
+            Đường đi ngắn nhất & Không (với đồ thị ko trọng số) & \textbf{Có} \\ \hline
+            Bộ nhớ & Ít hơn (theo chiều sâu) & Nhiều hơn (theo chiều rộng) \\ \hline
+            Ứng dụng & Tìm chu trình, giải đố & Tìm đường ngắn nhất, GPS \\ \hline
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% 19. Ứng dụng: Tìm đường đi
+\begin{frame}[fragile]{7.2 Ứng dụng: Kiểm tra tính liên thông}
+    \begin{itemize}
+        \item Đồ thị liên thông nếu từ một đỉnh bất kỳ có thể đi tới tất cả các đỉnh khác.
+        \item \textbf{Cách làm:} Gọi DFS(1), sau đó kiểm tra mảng \texttt{visited}.
+    \end{itemize}
+\begin{lstlisting}
+int count = 0;
+DFS(1);
+for(int i=1; i<=n; i++) if(visited[i]) count++;
+if(count == n) cout << "Do thi lien thong";
+\end{lstlisting}
+\end{frame}
+
+% 20. Độ phức tạp
+\begin{frame}{7.3 Độ phức tạp thuật toán}
+    Đối với cả DFS và BFS sử dụng danh sách kề:
+    \begin{itemize}
+        \item \textbf{Thời gian:} $O(V + E)$
+        \begin{itemize}
+            \item $V$: số đỉnh.
+            \item $E$: số cạnh.
+        \end{itemize}
+        \item \textbf{Không gian:} $O(V)$ để lưu trữ mảng đánh dấu và hàng đợi/ngăn xếp.
+    \end{itemize}
+\end{frame}
+
+% 21. Kết luận
+\begin{frame}{Tổng kết}
+    \begin{itemize}
+        \item Đồ thị là công cụ mạnh mẽ để mô hình hóa thế giới thực.
+        \item Lựa chọn cấu trúc dữ liệu (Ma trận hay Danh sách kề) quyết định hiệu suất bài toán.
+        \item DFS và BFS là nền tảng cho các thuật toán nâng cao (Dijkstra, Prim, Kruskal).
+    \end{itemize}
+\end{frame}
+
+% 22. Cảm ơn
+\begin{frame}
+    \begin{center}
+        \textcolor[rgb]{0.50,0.00,0.50}{\Huge \textbf{Trân trọng cảm ơn!}}
+        \\ \vspace{1cm}
+        \large Bạn có câu hỏi nào không?
+    \end{center}
+\end{frame}
+
+\end{document}

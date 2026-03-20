@@ -1,0 +1,214 @@
+\documentclass[aspectratio=169]{beamer}
+
+% --- Tiếng Việt ---
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+
+% --- Toán ---
+\usepackage{amsmath, amssymb}
+
+% --- Vẽ hình ---
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+
+% --- Giao diện ---
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% --- Xóa footer ---
+\setbeamertemplate{footline}{}
+\setbeamertemplate{navigation symbols}{}
+
+% --- Màu ---
+\definecolor{main}{RGB}{30,60,150}
+
+% =====================
+\title{}
+\author{}
+\date{}
+% =====================
+
+\begin{document}
+
+% =====================================
+% SLIDE 1: TRANG BÌA (RẤT ĐẸP)
+% =====================================
+\begin{frame}
+\begin{tikzpicture}[remember picture, overlay]
+\fill[blue!15] (current page.south west) rectangle (current page.north east);
+\fill[blue!70] (current page.south west) rectangle ([yshift=3cm]current page.south east);
+\end{tikzpicture}
+
+\vspace{2.5cm}
+
+\begin{center}
+{\Huge \textbf{LÝ THUYẾT ĐỒ THỊ}}\\[0.8cm]
+
+{\LARGE \textbf{BÀI 1: CÁC KHÁI NIỆM CƠ BẢN}}\\[0.5cm]
+
+\rule{9cm}{1.2pt}
+\end{center}
+
+\vfill
+\begin{flushright}
+\textit{Môn: Tin học}\\
+\textit{Chủ đề: Graph}
+\end{flushright}
+
+\end{frame}
+
+% =====================================
+% SLIDE 2: GIỚI THIỆU
+% =====================================
+\begin{frame}{Giới thiệu}
+\begin{itemize}
+    \item Đồ thị là một trong những cấu trúc dữ liệu quan trọng nhất trong Tin học.
+    \item Được sử dụng để mô tả mối quan hệ giữa các đối tượng.
+    \item Ứng dụng rộng rãi trong:
+    \begin{itemize}
+        \item Mạng xã hội
+        \item Bản đồ và định vị GPS
+        \item Trí tuệ nhân tạo
+    \end{itemize}
+\end{itemize}
+
+\begin{block}{Mục tiêu bài học}
+Hiểu rõ định nghĩa và các khái niệm cơ bản của đồ thị.
+\end{block}
+\end{frame}
+
+% =====================================
+% I. ĐỊNH NGHĨA ĐỒ THỊ
+% =====================================
+\begin{frame}{I. Định nghĩa đồ thị}
+\begin{block}{Khái niệm}
+Đồ thị là một cấu trúc gồm hai thành phần:
+\[
+G = (V, E)
+\]
+\end{block}
+
+\begin{itemize}
+    \item $V$: tập hợp các đỉnh (vertices)
+    \item $E$: tập hợp các cạnh (edges)
+\end{itemize}
+
+\pause
+
+\begin{block}{Ý nghĩa}
+Đồ thị dùng để biểu diễn các mối quan hệ giữa các đối tượng trong thực tế.
+\end{block}
+\end{frame}
+
+% =====================================
+% SLIDE: HÌNH MINH HỌA
+% =====================================
+\begin{frame}{Ví dụ minh họa đồ thị}
+\begin{center}
+\begin{tikzpicture}[
+    every node/.style={circle, draw, fill=blue!20, minimum size=1cm},
+    node distance=2.5cm
+]
+
+\node (A) {A};
+\node (B) [right of=A] {B};
+\node (C) [below of=A] {C};
+\node (D) [below of=B] {D};
+
+\draw[thick] (A)--(B);
+\draw[thick] (A)--(C);
+\draw[thick] (B)--(D);
+\draw[thick] (C)--(D);
+
+\end{tikzpicture}
+\end{center}
+
+\begin{block}{Mô tả}
+\begin{itemize}
+    \item $V = \{A, B, C, D\}$
+    \item $E = \{AB, AC, BD, CD\}$
+\end{itemize}
+\end{block}
+\end{frame}
+
+% =====================================
+% II. CÁC KHÁI NIỆM
+% =====================================
+\begin{frame}{II. Các khái niệm cơ bản}
+\begin{itemize}
+    \item \textbf{Đỉnh (Vertex)}: điểm biểu diễn đối tượng
+    \item \textbf{Cạnh (Edge)}: liên kết giữa hai đỉnh
+    \item \textbf{Đường đi}: dãy các cạnh liên tiếp
+\end{itemize}
+
+\pause
+
+\begin{block}{Ví dụ}
+A → B → D là một đường đi trong đồ thị.
+\end{block}
+\end{frame}
+
+% =====================================
+% SLIDE: BẬC ĐỈNH
+% =====================================
+\begin{frame}{Bậc của đỉnh}
+\begin{block}{Định nghĩa}
+Bậc của một đỉnh là số cạnh nối với đỉnh đó.
+\end{block}
+
+\begin{itemize}
+    \item deg(A) = 2
+    \item deg(B) = 2
+    \item deg(C) = 2
+\end{itemize}
+
+\pause
+
+\begin{block}{Ý nghĩa}
+Cho biết mức độ liên kết của một đỉnh trong đồ thị.
+\end{block}
+\end{frame}
+
+% =====================================
+% SLIDE: PHÂN LOẠI
+% =====================================
+\begin{frame}{Phân loại đồ thị}
+\begin{itemize}
+    \item \textbf{Đồ thị vô hướng}: cạnh không có chiều
+    \item \textbf{Đồ thị có hướng}: cạnh có hướng
+\end{itemize}
+
+\pause
+
+\begin{block}{Ví dụ}
+\begin{itemize}
+    \item Facebook → vô hướng
+    \item Google Maps → có hướng
+\end{itemize}
+\end{block}
+\end{frame}
+
+% =====================================
+% SLIDE: KẾT LUẬN
+% =====================================
+\begin{frame}{Kết luận}
+\begin{itemize}
+    \item Đồ thị là công cụ quan trọng trong Tin học
+    \item Giúp mô hình hóa các bài toán thực tế
+\end{itemize}
+
+\begin{block}{Ghi nhớ}
+Nắm chắc khái niệm là nền tảng để học BFS, DFS.
+\end{block}
+\end{frame}
+
+% =====================================
+% SLIDE: END
+% =====================================
+\begin{frame}
+\begin{center}
+\Huge \textbf{Cảm ơn đã lắng nghe!}
+\end{center}
+\end{frame}
+
+\end{document}
